@@ -1,16 +1,17 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import NoteForm from './components/NoteForm';
 import NoteGrid from './components/NoteGrid';
 import SearchBar from './components/SearchBar';
 import Login from './components/Login';
-import Cookies from 'js-cookie';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const savedUser = Cookies.get('currentUser');
@@ -18,6 +19,7 @@ export default function Home() {
       setCurrentUser(JSON.parse(savedUser));
       setIsLoggedIn(true);
     }
+    setIsLoading(false); // Set loading to false after checking for the saved user
   }, []);
 
   useEffect(() => {
@@ -90,24 +92,30 @@ export default function Home() {
     setFilteredNotes(filtered);
   };
 
+  const handleLogin = (username, password) => {
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find((user) => user.username === username && user.password === password);
+    if (user) {
+      setCurrentUser(user);
+      setIsLoggedIn(true);
+      Cookies.set('currentUser', JSON.stringify(user));
+    } else {
+      alert('Invalid username or password');
+    }
+  };
+
   const handleLogout = () => {
     setCurrentUser(null);
     setIsLoggedIn(false);
     Cookies.remove('currentUser');
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>; // Add a loading state
+  }
+
   if (!isLoggedIn) {
-    return <Login handleLogin={(username, password) => {
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find((user) => user.username === username && user.password === password);
-      if (user) {
-        setCurrentUser(user);
-        setIsLoggedIn(true);
-        Cookies.set('currentUser', JSON.stringify(user), { expires: 7 });
-      } else {
-        alert('Invalid username or password');
-      }
-    }} />;
+    return <Login handleLogin={handleLogin} />;
   }
 
   return (
