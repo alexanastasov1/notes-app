@@ -24,13 +24,13 @@ const Login = ({ handleLogin }) => {
       return;
     }
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    const newUser = { id: Date.now(), username, password, notes: [] }; // Assign a unique id to each user
+    const newUser = { id: Date.now(), username, password, notes: [] };
     const existingUser = users.find((user) => user.username === username);
     if (existingUser) {
       alert('Username already exists');
     } else {
       localStorage.setItem('users', JSON.stringify([...users, newUser]));
-      handleLogin(username, password); // Auto-login after registration
+      handleLogin(username, password);
     }
   };
 
