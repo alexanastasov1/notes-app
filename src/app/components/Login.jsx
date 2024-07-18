@@ -7,6 +7,10 @@ const Login = ({ handleLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      alert('Both fields are required.');
+      return;
+    }
     if (isRegistering) {
       handleRegister(username, password);
     } else {
@@ -15,14 +19,18 @@ const Login = ({ handleLogin }) => {
   };
 
   const handleRegister = (username, password) => {
+    if (!username || !password) {
+      alert('Both fields are required.');
+      return;
+    }
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    const newUser = { id: Date.now(), username, password, notes: [] };
+    const newUser = { id: Date.now(), username, password, notes: [] }; // Assign a unique id to each user
     const existingUser = users.find((user) => user.username === username);
     if (existingUser) {
       alert('Username already exists');
     } else {
       localStorage.setItem('users', JSON.stringify([...users, newUser]));
-      handleLogin(username, password);
+      handleLogin(username, password); // Auto-login after registration
     }
   };
 
@@ -82,7 +90,7 @@ const Login = ({ handleLogin }) => {
                 className="text-blue-500 hover:text-blue-700"
                 onClick={() => setIsRegistering(false)}
               >
-                Log In here
+                Log in here
               </button>
             </p>
           )}
