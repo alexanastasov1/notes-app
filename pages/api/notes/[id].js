@@ -1,5 +1,5 @@
 import clientPromise from '../../../lib/mongodb';
-import { ObjectId } from 'mongodb'; // Import ObjectId from mongodb
+import { ObjectId } from 'mongodb';
 
 export default async function handler(req, res) {
   const client = await clientPromise;
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       try {
         const { title, content } = req.body;
         const result = await db.collection('notes').updateOne(
-          { _id: new ObjectId(id) }, // Correct usage with 'new'
+          { _id: new ObjectId(id) },
           { $set: { title, content } }
         );
         if (result.modifiedCount === 1) {
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       break;
     case 'DELETE':
       try {
-        const result = await db.collection('notes').deleteOne({ _id: new ObjectId(id) }); // Correct usage with 'new'
+        const result = await db.collection('notes').deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
           res.status(200).end();
         } else {

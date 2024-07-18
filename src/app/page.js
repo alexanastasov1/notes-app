@@ -4,6 +4,7 @@ import NoteForm from './components/NoteForm';
 import NoteGrid from './components/NoteGrid';
 import SearchBar from './components/SearchBar';
 import Login from './components/Login';
+import Cookies from 'js-cookie';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,9 +13,9 @@ export default function Home() {
   const [filteredNotes, setFilteredNotes] = useState([]);
 
   useEffect(() => {
-    const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+    const savedUser = Cookies.get('currentUser');
     if (savedUser) {
-      setCurrentUser(savedUser);
+      setCurrentUser(JSON.parse(savedUser));
       setIsLoggedIn(true);
     }
   }, []);
@@ -92,7 +93,7 @@ export default function Home() {
   const handleLogout = () => {
     setCurrentUser(null);
     setIsLoggedIn(false);
-    localStorage.removeItem('currentUser');
+    Cookies.remove('currentUser');
   };
 
   if (!isLoggedIn) {
@@ -102,7 +103,7 @@ export default function Home() {
       if (user) {
         setCurrentUser(user);
         setIsLoggedIn(true);
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        Cookies.set('currentUser', JSON.stringify(user), { expires: 7 });
       } else {
         alert('Invalid username or password');
       }

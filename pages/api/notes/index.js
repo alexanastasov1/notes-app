@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     case 'POST':
       try {
         const { title, content } = req.body;
-        const userId = req.query.userId; // Extract userId from query parameter
+        const userId = req.query.userId;
         const newNote = { title, content, userId, createdAt: new Date() };
         await db.collection('notes').insertOne(newNote);
         res.json(newNote);
